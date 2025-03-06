@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Winner Announcement</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        body {
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            background: url('https://source.unsplash.com/1600x900/?winner,celebration') no-repeat center center/cover;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            padding: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .lottery-box, .winner-box {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            display: inline-block;
+            transition: opacity 1s ease-in-out;
+        }
+        .hidden {
+            display: none;
+        }
+        .submit-button, .claim-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #ff0066;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        .submit-button:hover, .claim-button:hover {
+            background: #cc0052;
+            transform: scale(1.1);
+        }
+        .lottery-options button {
+            font-size: 24px;
+            padding: 10px;
+            margin: 10px;
+            width: 150px;
+            border: none;
+            border-radius: 8px;
+            background: #ffcc33;
+            color: black;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .lottery-options button:hover {
+            background: #ffaa00;
+            transform: scale(1.1);
+        }
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: #ffcc00;
+            opacity: 0.7;
+            animation: confetti 3s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lottery-box" id="lotteryBox">
+            <h2>🎰 የአሸናፊ ቁጥር ይምረጡ 🎰</h2>
+            <div class="lottery-options" id="lotteryOptions"></div>
+        </div>
+        
+        <div class="winner-box hidden" id="winnerBox">
+            <h2>🎉የ500,000 ብር አሸናፊ!! 🎉</h2>
+            <p>የእርስዎ ቁጥር <span id="winningNumber"></span> ተመርጧል!</p>
+            <p><strong>+123-456-7890</strong> ላይ በመደወል ሽልማትዎን ይውሰዱ</p>
+            <a class="claim-button" href="tel:+1234567890">Call Now</a>
+        </div>
+    </div>
+    
+    <script>
+        function getRandomNumber() {
+            return Math.floor(100000 + Math.random() * 900000);
+        }
+
+        function generateLotteryOptions() {
+            let optionsContainer = document.getElementById("lotteryOptions");
+            for (let i = 0; i < 10; i++) {
+                let num = getRandomNumber();
+                let button = document.createElement("button");
+                button.innerText = num;
+                button.onclick = function() { revealWinner(num); };
+                optionsContainer.appendChild(button);
+            }
+        }
+
+        function revealWinner(selectedNumber) {
+            document.getElementById("winningNumber").innerText = selectedNumber;
+            document.getElementById("lotteryBox").classList.add("hidden");
+            document.getElementById("winnerBox").classList.remove("hidden");
+            launchConfetti();
+        }
+
+        function launchConfetti() {
+            for (let i = 0; i < 100; i++) {
+                let confettiPiece = document.createElement("div");
+                confettiPiece.classList.add("confetti");
+                confettiPiece.style.left = Math.random() * 100 + "vw";
+                confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confettiPiece.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                document.body.appendChild(confettiPiece);
+                setTimeout(() => confettiPiece.remove(), 5000);
+            }
+        }
+
+        generateLotteryOptions();
+    </script>
+</body>
+</html>
