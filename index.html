@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottery Winner Announcement</title>
+    <title>ፈጣን Lottery</title>
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.8); }
@@ -15,10 +15,15 @@
             100% { transform: translateY(100vh) rotate(720deg); }
         }
 
+        @keyframes scrollNews {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
         body {
             text-align: center;
             font-family: 'Arial', sans-serif;
-            background: url('https://github.com/sinaf777/fetanlot/blob/main/photo_2025-03-06_12-06-50.jpg') no-repeat center center/cover;
+            background: url('https://raw.githubusercontent.com/sinaf777/fetanlot/refs/heads/main/photo_2025-03-06_12-06-50.jpg') no-repeat center center/cover;
             color: white;
             margin: 0;
             padding: 0;
@@ -28,10 +33,26 @@
             height: 100vh;
             overflow: hidden;
         }
+
         .container {
             padding: 20px;
             animation: fadeIn 1s ease-in-out;
         }
+
+        .news-ticker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #333;
+            color: yellow;
+            padding: 10px 0;
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: scrollNews 30s linear infinite; /* Speed decreased here to 30s */
+        }
+
         .lottery-box, .winner-box {
             background: rgba(0, 0, 0, 0.7);
             padding: 40px;
@@ -40,9 +61,11 @@
             display: inline-block;
             transition: opacity 1s ease-in-out;
         }
+
         .hidden {
             display: none;
         }
+
         .submit-button, .claim-button {
             display: inline-block;
             margin-top: 20px;
@@ -58,10 +81,12 @@
             cursor: pointer;
             border: none;
         }
+
         .submit-button:hover, .claim-button:hover {
             background: #cc0052;
             transform: scale(1.1);
         }
+
         .lottery-options button {
             font-size: 24px;
             padding: 10px;
@@ -74,10 +99,12 @@
             cursor: pointer;
             transition: 0.3s;
         }
+
         .lottery-options button:hover {
             background: #ffaa00;
             transform: scale(1.1);
         }
+
         .confetti {
             position: absolute;
             top: 0;
@@ -91,8 +118,13 @@
     </style>
 </head>
 <body>
+    <div class="news-ticker" id="newsTicker">
+        <!-- Randomized winner names and amounts will be injected here -->
+    </div>
+    
     <div class="container">
         <div class="lottery-box" id="lotteryBox">
+            <h1>እንኩዋን ወደ ፈጣን Lottery በደና መጡ::</h1>
             <h2>🎰 የአሸናፊ ቁጥር ይምረጡ 🎰</h2>
             <div class="lottery-options" id="lotteryOptions"></div>
         </div>
@@ -100,12 +132,50 @@
         <div class="winner-box hidden" id="winnerBox">
             <h2>🎉የ500,000 ብር አሸናፊ!! 🎉</h2>
             <p>የእርስዎ ቁጥር <span id="winningNumber"></span> ተመርጧል!</p>
-            <p><strong>+123-456-7890</strong> ላይ በመደወል ሽልማትዎን ይውሰዱ</p>
-            <a class="claim-button" href="tel:+1234567890">Call Now</a>
+            <p><strong>+251966668093</strong> ላይ በመደወል ሽልማትዎን ይውሰዱ</p>
+            <a class="claim-button" href="tel:+251966668093">Call Now</a>
         </div>
     </div>
     
     <script>
+        const ethiopianNames = [
+            "አባተ", "አባይ", "አባይነህ", "አብደላ", "አብዲ", "አብዱ", "አብዱል", "አብዱላሂ", "አበበ", "አበጋዝ",
+            "አቤል", "አብነት", "አቤነዘር", "አበራ", "አብይ", "አብራሃም", "አቡበከር", "አዳነ", "አዲሱ", "አድማሱ",
+            "አዱኛ", "አፍወርቅ", "አህመድ", "አካሉ", "አክሊሉ", "አላዛር", "አለባቸው", "አለምአየሁ", "አለሙ", "አሌክስ",
+            "ዓሊ", "አሉላ", "አማን", "አማኑኤል", "አማረ", "አምሃ", "አሚን", "አንዳርጋቸው", "አንድነት", "አንዱአለም",
+            "አንተነህ", "አርጋው", "አሮን", "አስቻለው", "አሰፋ", "አስፋው", "አሸብር", "አሸናፊ", "አስማማው", "አስራት",
+            "አሰፋ", "አጥናፉ", "አጥላባችውረዴት", "ሬድዋን", "ሀብታሙ", "ሀብቴ", "ሀጎስ", "ሃይሌ", "ኃይለ-ማርያም",
+            "ኃይለ-ስላሴ", "ሃይሌ", "ሀሰን", "ሄኖክ", "ህሩይ", "ሁሴን", "ባህሩ", "በፈቃዱ", "በሃይሉ", "በቀለ", "በቂላ",
+            "በላቸው", "በላይ", "በላይነህ", "በለጠ", "በእምነት", "በረከት", "ብራሃኑ", "በርሄ", "በሱፈቃድ", "ቤተአብ",
+            "በየነ", "ቢኒያም", "ብሩክ", "ብስራት", "ሮቤልኤፍሬም", "ኤሊያስ", "እንዳለ", "እንዳልካቸው", "እንድርያስ",
+            "ኤርሚያስ", "እሸቴ", "እሸቱ", "እስክንድር", "እስጢፋኖስ", "እያሱ", "እዮቤል", "ኢዛና", "እዝራ"
+        ];
+
+        const amounts = ["200,000ብር", "500,000ብር", "100,000ብር", "10,000,000ብር"];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function generateRandomNews() {
+            let namesCopy = [...ethiopianNames];
+            let amountsCopy = [...amounts];
+            shuffleArray(namesCopy);
+            shuffleArray(amountsCopy);
+
+            const newsTicker = document.getElementById("newsTicker");
+            let tickerContent = "";
+
+            for (let i = 0; i < namesCopy.length; i++) {
+                tickerContent += `${namesCopy[i]} - ${amountsCopy[i % amountsCopy.length]} , `;
+            }
+
+            newsTicker.innerHTML = tickerContent.slice(0, -2); // Remove the last comma and space
+        }
+
         function getRandomNumber() {
             return Math.floor(100000 + Math.random() * 900000);
         }
@@ -140,6 +210,7 @@
             }
         }
 
+        generateRandomNews();
         generateLotteryOptions();
     </script>
 </body>
