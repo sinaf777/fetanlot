@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Your Name</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            background: url('https://raw.githubusercontent.com/sinaf777/fetanlot/refs/heads/main/photo_2025-03-06_12-06-50.jpg') no-repeat center center/cover;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .name-box {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .name-box input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: none;
+            font-size: 18px;
+        }
+
+        .submit-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #ff0066;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .submit-button:hover {
+            background: #cc0052;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="name-box">
+        <h1>Enter Your Full Name</h1>
+        <input type="text" id="fullName" placeholder="Full Name">
+        <button class="submit-button" onclick="submitName()">Submit</button>
+    </div>
+    <script>
+        function submitName() {
+            const fullName = document.getElementById('fullName').value;
+            if (fullName.trim() === '') {
+                alert('Please enter your full name');
+                return;
+            }
+            localStorage.setItem('fullName', fullName);
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
