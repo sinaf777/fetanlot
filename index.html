@@ -150,7 +150,7 @@
     
     <div class="container">
         <div class="lottery-box" id="lotteryBox">
-            <h1>እንኩዋን ወደ ፈጣን Lottery በደና መጡ::</h1>
+            <h1>እንኩዋን ወደ ፈጣን Lottery በደና መጡ, <span id="userName"></span>!</h1>
             <h2>🎰 የአሸናፊ ቁጥር ይምረጡ 🎰</h2>
             <div class="lottery-options" id="lotteryOptions"></div>
         </div>
@@ -165,7 +165,7 @@
     
     <script>
         const ethiopianNames = [
-            "አባተ", "አባይ", "አባይነህ", "አብደላ", "አብዲ", "አብዱ", "አብዱል", "አብዱላሂ", "አበበ", "አበጋዝ",
+            "አባተ", "አባይ", "አባይነህ", "አብደላ", "አብዲ", "አብዱ", "አብዱላሂ", "አበበ", "አበጋዝ",
             "አቤል", "አብነት", "አቤነዘር", "አበራ", "አብይ", "አብራሃም", "አቡበከር", "አዳነ", "አዲሱ", "አድማሱ",
             "አዱኛ", "አፍወርቅ", "አህመድ", "አካሉ", "አክሊሉ", "አላዛር", "አለባቸው", "አለምአየሁ", "አለሙ", "አሌክስ",
             "ዓሊ", "አሉላ", "አማን", "አማኑኤል", "አማረ", "አምሃ", "አሚን", "አንዳርጋቸው", "አንድነት", "አንዱአለም",
@@ -234,6 +234,14 @@
                 document.body.appendChild(confettiPiece);
                 setTimeout(() => confettiPiece.remove(), 5000);
             }
+        }
+
+        // Check if the user's name is stored, if not, redirect to enter-name.html
+        const userName = localStorage.getItem('fullName');
+        if (!userName) {
+            window.location.href = 'enter-name.html';
+        } else {
+            document.getElementById('userName').innerText = userName;
         }
 
         generateRandomNews();
